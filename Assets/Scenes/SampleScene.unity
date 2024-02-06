@@ -420,10 +420,6 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 1461995006
       objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: GlobalObjectIdHash
-      value: 3212840629
-      objectReference: {fileID: 0}
     - target: {fileID: 1697666028849053708, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.507246
@@ -468,6 +464,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: prefab mouse
       objectReference: {fileID: 0}
+    - target: {fileID: 7117428640426831302, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d3c351abc1be7e04683d53c1f8559745, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

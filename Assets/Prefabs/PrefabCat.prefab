@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1137568545
+  GlobalObjectIdHash: 827191086
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -212,12 +212,13 @@ MonoBehaviour:
   MouseAte: 0
   Mouth: {fileID: 3430464339546769535}
   Mouse: {fileID: 2072925690138434230, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
+  colorAssigner: {fileID: 9012698335767024798, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
   colors:
   - {r: 0.8117647, g: 0.43066105, b: 0.015686255, a: 0}
   - {r: 0.47634256, g: 0.47634256, b: 0.47634256, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 1, g: 1, b: 1, a: 0}
-  spawnedPrefab: {fileID: 432607268836161220}
+  spawnedPrefab: {fileID: 2072925690138434230, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
   cannon: {fileID: 3430464339546769535}
   bullet: {fileID: 2072925690138434230, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
   audioListener: {fileID: 7344084478401996097}

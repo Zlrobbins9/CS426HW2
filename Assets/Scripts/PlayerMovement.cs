@@ -14,6 +14,7 @@ public class PlayerMovement : NetworkBehaviour
     public bool MouseAte;
     public GameObject Mouth;
     public GameObject Mouse;
+    public MS colorAssigner;
 
     Rigidbody rb;
     Transform t;
@@ -41,6 +42,7 @@ public class PlayerMovement : NetworkBehaviour
         MouseAte = false;
         rb = GetComponent<Rigidbody>();
         t = GetComponent<Transform>();
+        colorAssigner.ChangeMaterial("keyboard");
     }
     // Update is called once per frame
     void Update()
