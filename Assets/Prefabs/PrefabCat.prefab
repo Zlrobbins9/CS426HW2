@@ -69,6 +69,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8181963637665878695}
+  - {fileID: 4981263922691792454}
   - {fileID: 816542990037660578}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -141,8 +142,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0033461999, y: 0.0092186, z: 0.0131580895}
-  m_Center: {x: 0, y: 0.0025748299, z: 0.002992435}
+  m_Size: {x: 0.0061995466, y: 0.0092186, z: 0.010808163}
+  m_Center: {x: 0.00012724142, y: 0.0025748299, z: 0.004167401}
 --- !u!114 &1133115347759530827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 827191086
+  GlobalObjectIdHash: 1137568545
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -205,15 +206,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae4db95d0703df7428f3fe3366bcac33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 25
+  rotationSpeed: 90
+  force: 700
+  MouseAte: 0
+  Mouth: {fileID: 3430464339546769535}
+  Mouse: {fileID: 2072925690138434230, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
   colors:
   - {r: 0.8117647, g: 0.43066105, b: 0.015686255, a: 0}
   - {r: 0.47634256, g: 0.47634256, b: 0.47634256, a: 0}
   - {r: 0, g: 0, b: 0, a: 0}
   - {r: 1, g: 1, b: 1, a: 0}
   spawnedPrefab: {fileID: 432607268836161220}
-  cannon: {fileID: 414726533236964822}
-  bullet: {fileID: 5820164983111649622, guid: 224e755ddcd418846a8882c42b8561f8, type: 3}
+  cannon: {fileID: 3430464339546769535}
+  bullet: {fileID: 2072925690138434230, guid: 6be515eca374c0e4789cd6a161f0084f, type: 3}
   audioListener: {fileID: 7344084478401996097}
   playerCamera: {fileID: 7636508027686790110}
 --- !u!54 &1466999753536327261
@@ -241,7 +247,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &1700471164779124015
 MonoBehaviour:
@@ -379,3 +385,34 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2071315853539411042}
   m_Enabled: 0
+--- !u!1 &3430464339546769535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4981263922691792454}
+  m_Layer: 0
+  m_Name: Mouth
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4981263922691792454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3430464339546769535}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.00000003774895, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.00021, y: 0.00257, z: 0.01175}
+  m_LocalScale: {x: 0.0033333332, y: 0.0033333332, z: 0.0033333332}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7150067343871154133}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

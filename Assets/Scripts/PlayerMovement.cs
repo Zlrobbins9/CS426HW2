@@ -9,6 +9,14 @@ using Unity.Netcode;
 public class PlayerMovement : NetworkBehaviour
 {
     public float speed = 2f;
+    public float rotationSpeed = 90;
+    public float force = 700f;
+    public bool MouseAte;
+    public GameObject Mouth;
+    public GameObject Mouse;
+
+    Rigidbody rb;
+    Transform t;
     // create a list of colors
     public List<Color> colors = new List<Color>();
 
@@ -30,7 +38,9 @@ public class PlayerMovement : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        MouseAte = false;
+        rb = GetComponent<Rigidbody>();
+        t = GetComponent<Transform>();
     }
     // Update is called once per frame
     void Update()
@@ -40,26 +50,39 @@ public class PlayerMovement : NetworkBehaviour
         // not on the other prefabs 
         if (!IsOwner) return;
 
-        Vector3 moveDirection = new Vector3(0, 0, 0);
 
+        // Time.deltaTime represents the time that passed since the last frame
+        //the multiplication below ensures that GameObject moves constant speed every frame
         if (Input.GetKey(KeyCode.W))
-        {
-            moveDirection.z = +1f;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            moveDirection.z = -1f;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            moveDirection.x = -1f;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            moveDirection.x = +1f;
-        }
-        transform.position += moveDirection * speed * Time.deltaTime;
+            rb.velocity += this.transform.forward * speed * Time.deltaTime;
+        else if (Input.GetKey(KeyCode.S))
+            rb.velocity -= this.transform.forward * speed * Time.deltaTime;
 
+        // Quaternion returns a rotation that rotates x degrees around the x axis and so on
+        if (Input.GetKey(KeyCode.D))
+            t.rotation *= Quaternion.Euler(0, rotationSpeed * Time.deltaTime, 0);
+        else if (Input.GetKey(KeyCode.A))
+            t.rotation *= Quaternion.Euler(0, -rotationSpeed * Time.deltaTime, 0);
+
+        if (Input.GetKeyDown(KeyCode.Space))
+            rb.AddForce(t.up * force);
+
+
+        /*
+        if (Input.GetButtonDown("Fire1"))
+        {
+            if (MouseAte == true) //spit out mouse
+            {
+                GameObject newMouse = GameObject.Instantiate(Mouse, Mouth.transform.position, Mouth.transform.rotation) as GameObject;
+                newMouse.GetComponent<MS>().Dropped = true;
+                newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
+                newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
+                newMouse.transform.parent = null;
+                Debug.Log(newMouse.GetComponent<MS>().Dropped);
+                MouseAte = false;
+            }
+        }
+        */
 
         // if I is pressed spawn the object 
         // if J is pressed destroy the object
@@ -79,12 +102,16 @@ public class PlayerMovement : NetworkBehaviour
             Destroy(instantiatedPrefab);
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        
+        if (Input.GetButtonDown("Fire1") && MouseAte == true)
         {
             // call the BulletSpawningServerRpc method
             // as client can not spawn objects
             BulletSpawningServerRpc(cannon.transform.position, cannon.transform.rotation);
+            //Debug.Log(newMouse.GetComponent<MS>().Dropped);
+            MouseAte = false;
         }
+        
     }
 
     // this method is called when the object is spawned
@@ -117,5 +144,22 @@ public class PlayerMovement : NetworkBehaviour
         newBullet.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
         newBullet.GetComponent<Rigidbody>().AddForce(newBullet.transform.forward * 1500);
         // newBullet.GetComponent<NetworkObject>().Spawn(true);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+
+        if (MouseAte == false && other.gameObject.CompareTag("Mouse"))
+        {
+            Debug.Log("Ate:" + other.gameObject.GetComponent<MS>().Dropped);
+            //other.gameObject.transform.parent = gameObject.transform;
+            if (other.gameObject.GetComponent<MS>().Dropped == false)
+            {
+                Destroy(other.gameObject);
+                MouseAte = true;
+            }
+
+        }
+
     }
 }
