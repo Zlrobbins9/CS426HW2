@@ -51,8 +51,8 @@ public class MS : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material = Material1;
-        Debug.Log(this.gameObject.tag);
+        //gameObject.transform.GetChild(1).GetComponent<SkinnedMeshRenderer>().material = Material1;
+        //Debug.Log(this.gameObject.tag);
     }
 
     // Update is called once per frame
