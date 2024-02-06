@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Zaccmesseduphisbranchlikeanidiot.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Scenes/baseScene.unity
+    guid: 1566ab3140f666d49b7ad0e316534d1a
   m_configObjects: {}
