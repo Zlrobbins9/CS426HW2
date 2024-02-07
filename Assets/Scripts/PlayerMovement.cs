@@ -12,8 +12,13 @@ public class PlayerMovement : NetworkBehaviour
     public float rotationSpeed = 90;
     public float force = 700f;
     public bool MouseAte;
-    public GameObject Mouth;
-    public GameObject Mouse;
+    public Material skinMouse;
+
+    public float MaxYRot = 1f;
+    public float MinYRot = -64f;
+
+    public int MyCount; // Start count once mouse picked up.
+    public int toCount; // To count when mouse will be dropped.
 
     Rigidbody rb;
     Transform t;
@@ -26,8 +31,9 @@ public class PlayerMovement : NetworkBehaviour
     // save the instantiated prefab
     private GameObject instantiatedPrefab;
 
-    public GameObject cannon;
-    public GameObject bullet;
+    public GameObject Mouth;        // Slide Child: Mouth here.
+    public GameObject Mouse;        // Mouse prefab with MS script
+    public GameObject EmptyMouse;  // Slide Child: MouseNOScript here
 
     // reference to the camera audio listener
     [SerializeField] private AudioListener audioListener;
@@ -39,6 +45,8 @@ public class PlayerMovement : NetworkBehaviour
     void Start()
     {
         MouseAte = false;
+        MyCount = 0;
+        toCount = 1500 + Random.Range(0, 2147);
         rb = GetComponent<Rigidbody>();
         t = GetComponent<Transform>();
     }
@@ -68,21 +76,6 @@ public class PlayerMovement : NetworkBehaviour
             rb.AddForce(t.up * force);
 
 
-        /*
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if (MouseAte == true) //spit out mouse
-            {
-                GameObject newMouse = GameObject.Instantiate(Mouse, Mouth.transform.position, Mouth.transform.rotation) as GameObject;
-                newMouse.GetComponent<MS>().Dropped = true;
-                newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
-                newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
-                newMouse.transform.parent = null;
-                Debug.Log(newMouse.GetComponent<MS>().Dropped);
-                MouseAte = false;
-            }
-        }
-        */
 
         // if I is pressed spawn the object 
         // if J is pressed destroy the object
@@ -102,16 +95,36 @@ public class PlayerMovement : NetworkBehaviour
             Destroy(instantiatedPrefab);
         }
 
-        
+
         if (Input.GetButtonDown("Fire1") && MouseAte == true)
         {
             // call the BulletSpawningServerRpc method
             // as client can not spawn objects
-            BulletSpawningServerRpc(cannon.transform.position, cannon.transform.rotation);
-            //Debug.Log(newMouse.GetComponent<MS>().Dropped);
+            BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
             MouseAte = false;
         }
-        
+
+        if (MouseAte == true)
+        {
+            /*if (MyCount % 20 == 0)     // Uncomment to wiggle mouse. ----------------
+            {
+                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 26f, 0, 1);
+            } else
+            {
+                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 0.003f, 0, 1);
+            }*/
+
+            MyCount += 1;
+
+
+            if (MyCount == toCount)
+            {
+                BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
+            }
+        }
+
+
+
     }
 
     // this method is called when the object is spawned
@@ -133,29 +146,49 @@ public class PlayerMovement : NetworkBehaviour
     // method name must end with ServerRPC
     private void BulletSpawningServerRpc(Vector3 position, Quaternion rotation)
     {
-        // call the BulletSpawningClientRpc method to locally create the bullet on all clients
         BulletSpawningClientRpc(position, rotation);
     }
 
     [ClientRpc]
     private void BulletSpawningClientRpc(Vector3 position, Quaternion rotation)
     {
-        GameObject newBullet = Instantiate(bullet, position, rotation);
-        newBullet.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
-        newBullet.GetComponent<Rigidbody>().AddForce(newBullet.transform.forward * 1500);
-        // newBullet.GetComponent<NetworkObject>().Spawn(true);
+        GameObject newMouse = Instantiate(Mouse, position, rotation);
+        newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
+        newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
+        newMouse.GetComponent<MS>().Dropped = true;
+        newMouse.GetComponent<MS>().Material1 = skinMouse;
+
+        // Makes Child MouseNOscript hidden(spit out):
+        GameObject mb = gameObject.transform.Find("MouseNOscript").gameObject;
+        GameObject mt = mb.transform.Find("Maus").gameObject;
+        mt.GetComponent<SkinnedMeshRenderer>().enabled = false;
+
+        // New Random drop time for next mouse:
+        toCount = 1500 + Random.Range(0, 2147);
+        MyCount = 0;
+        MouseAte = false;
+
+
     }
+
+
 
     private void OnCollisionEnter(Collision other)
     {
 
         if (MouseAte == false && other.gameObject.CompareTag("Mouse"))
         {
-            Debug.Log("Ate:" + other.gameObject.GetComponent<MS>().Dropped);
-            //other.gameObject.transform.parent = gameObject.transform;
             if (other.gameObject.GetComponent<MS>().Dropped == false)
             {
                 Destroy(other.gameObject);
+
+                // Makes Child MouseNOscript visible:
+                GameObject mb = gameObject.transform.Find("MouseNOscript").gameObject;
+                GameObject mt = mb.transform.Find("Maus").gameObject;
+                mt.GetComponent<SkinnedMeshRenderer>().enabled = true;
+                mt.GetComponent<SkinnedMeshRenderer>().material = other.gameObject.GetComponent<MS>().Material1;
+                skinMouse = other.gameObject.GetComponent<MS>().Material1;
+
                 MouseAte = true;
             }
 
