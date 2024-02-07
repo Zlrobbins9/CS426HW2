@@ -12,14 +12,13 @@ public class PlayerMovement : NetworkBehaviour
     public float rotationSpeed = 90;
     public float force = 700f;
     public bool MouseAte;
-    public GameObject Mouth;        // Slide Child: Mouth here.
-    public GameObject Mouse;        // Mouse prefab with MS script
-    public MS colorAssigner;
     public Material skinMouse;
 
+    public float MaxYRot = 1f;
+    public float MinYRot = -64f;
 
     public int MyCount; // Start count once mouse picked up.
-    public int timeToQTE; // To count when mouse will be dropped.
+    public int toCount; // To count when mouse will be dropped.
 
     Rigidbody rb;
     Transform t;
@@ -32,7 +31,8 @@ public class PlayerMovement : NetworkBehaviour
     // save the instantiated prefab
     private GameObject instantiatedPrefab;
 
-
+    public GameObject Mouth;        // Slide Child: Mouth here.
+    public GameObject Mouse;        // Mouse prefab with MS script
     public GameObject EmptyMouse;  // Slide Child: MouseNOScript here
 
     // reference to the camera audio listener
@@ -40,18 +40,15 @@ public class PlayerMovement : NetworkBehaviour
     // reference to the camera
     [SerializeField] private Camera playerCamera;
 
-    bool[] QTEProgress = { false, false, false, false };
 
     // Start is called before the first frame update
     void Start()
     {
         MouseAte = false;
+        MyCount = 0;
+        toCount = 1500 + Random.Range(0, 2147);
         rb = GetComponent<Rigidbody>();
         t = GetComponent<Transform>();
-        colorAssigner.ChangeMaterial("keyboard");
-        MyCount = 0;
-        timeToQTE = 600; //
-
     }
     // Update is called once per frame
     void Update()
@@ -79,31 +76,6 @@ public class PlayerMovement : NetworkBehaviour
             rb.AddForce(t.up * force);
 
 
-        // Quaternion returns a rotation that rotates x degrees around the x axis and so on
-        if (Input.GetKey(KeyCode.D))
-            t.rotation *= Quaternion.Euler(0, rotationSpeed * Time.deltaTime, 0);
-        else if (Input.GetKey(KeyCode.A))
-            t.rotation *= Quaternion.Euler(0, -rotationSpeed * Time.deltaTime, 0);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            rb.AddForce(t.up * force);
-
-
-        /*
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if (MouseAte == true) //spit out mouse
-            {
-                GameObject newMouse = GameObject.Instantiate(Mouse, Mouth.transform.position, Mouth.transform.rotation) as GameObject;
-                newMouse.GetComponent<MS>().Dropped = true;
-                newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
-                newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
-                newMouse.transform.parent = null;
-                Debug.Log(newMouse.GetComponent<MS>().Dropped);
-                MouseAte = false;
-            }
-        }
-        */
 
         // if I is pressed spawn the object 
         // if J is pressed destroy the object
@@ -123,7 +95,7 @@ public class PlayerMovement : NetworkBehaviour
             Destroy(instantiatedPrefab);
         }
 
-        
+
         if (Input.GetButtonDown("Fire1") && MouseAte == true)
         {
             // call the BulletSpawningServerRpc method
@@ -134,39 +106,25 @@ public class PlayerMovement : NetworkBehaviour
 
         if (MouseAte == true)
         {
+            /*if (MyCount % 20 == 0)     // Uncomment to wiggle mouse. ----------------
+            {
+                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 26f, 0, 1);
+            } else
+            {
+                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 0.003f, 0, 1);
+            }*/
 
             MyCount += 1;
-            if (MyCount >= timeToQTE)//trigger QTE if 10 secs have passed
-            {
-                shaking();
-            }
 
-            if (MyCount >= timeToQTE +720) //time is up to complete all QTE (180 frames for 4 inputs)
+
+            if (MyCount == toCount)
             {
-                if (QTEProgress[3] == false) //failed to complete in time
-                {
-                    BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
-                    MouseAte = false;
-                }
-                MyCount = 0; //win or lose, restart the timer
+                BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
             }
         }
 
 
 
-    }
-
-    void shaking()
-    {
-
-        if (MyCount % 20 == 0)     // Uncomment to wiggle mouse. ----------------
-        {
-            gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 26f, 0, 1);
-        }
-        else
-        {
-            gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 0.003f, 0, 1);
-        }
     }
 
     // this method is called when the object is spawned
@@ -200,14 +158,13 @@ public class PlayerMovement : NetworkBehaviour
         newMouse.GetComponent<MS>().Dropped = true;
         newMouse.GetComponent<MS>().Material1 = skinMouse;
 
-
         // Makes Child MouseNOscript hidden(spit out):
         GameObject mb = gameObject.transform.Find("MouseNOscript").gameObject;
         GameObject mt = mb.transform.Find("Maus").gameObject;
         mt.GetComponent<SkinnedMeshRenderer>().enabled = false;
 
         // New Random drop time for next mouse:
-        timeToQTE = 1500 + Random.Range(0, 2147);
+        toCount = 1500 + Random.Range(0, 2147);
         MyCount = 0;
         MouseAte = false;
 
@@ -238,5 +195,4 @@ public class PlayerMovement : NetworkBehaviour
         }
 
     }
-
 }
