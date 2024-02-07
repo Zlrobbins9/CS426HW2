@@ -26,6 +26,7 @@ public class TargetScript : MonoBehaviour
             if (MyMaterial == other.gameObject.GetComponent<MS>().Material1 && other.gameObject.GetComponent<MS>().Dropped == true)
             {
                 Destroy(other.gameObject);
+                //TODO: increase points
             }
 
         }

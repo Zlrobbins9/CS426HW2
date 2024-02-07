@@ -53,12 +53,19 @@ public class PlayerMovement : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+        if (transform.position.y < -50)
+        {
+            transform.position = new Vector3(0,0,0);
+        }
         // check if the player is the owner of the object
         // makes sure the script is only executed on the owners 
         // not on the other prefabs 
         if (!IsOwner) return;
 
 
+        
         // Time.deltaTime represents the time that passed since the last frame
         //the multiplication below ensures that GameObject moves constant speed every frame
         if (Input.GetKey(KeyCode.W))
@@ -154,7 +161,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         GameObject newMouse = Instantiate(Mouse, position, rotation);
         newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
-        newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
+        newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 500);
         newMouse.GetComponent<MS>().Dropped = true;
         newMouse.GetComponent<MS>().Material1 = skinMouse;
 

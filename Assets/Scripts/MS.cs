@@ -6,13 +6,6 @@ using UnityEngine;
 public class MS : MonoBehaviour
 {
     // Define a public dictionary to map string colors to materials
-    public Material defaultMat;
-    public Material CPU;
-    public Material IO;
-    public Material keyboard;
-    public Material mouse;
-    public Material memory;
-    public Material secondaryStorage;
 
     // Method to call to change the material
     public void ChangeMaterial(string colorName)
@@ -65,7 +58,7 @@ public class MS : MonoBehaviour
             DeSpawnCounter += 1;
             if (DeSpawnCounter == 1500)
             {
-                Destroy(gameObject);
+                Dropped = false;
             }
             Debug.Log(Material1);
             GameObject skin = gameObject.transform.Find("Maus").gameObject;
