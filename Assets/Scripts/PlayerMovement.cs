@@ -18,7 +18,7 @@ public class PlayerMovement : NetworkBehaviour
 
 
     public int MyCount; // Start count once mouse picked up.
-    public int toCount; // To count when mouse will be dropped.
+    public int timeToQTE; // To count when mouse will be dropped.
 
     Rigidbody rb;
     Transform t;
@@ -39,6 +39,7 @@ public class PlayerMovement : NetworkBehaviour
     // reference to the camera
     [SerializeField] private Camera playerCamera;
 
+    bool[] QTEProgress = { false, false, false, false };
 
     // Start is called before the first frame update
     void Start()
@@ -48,7 +49,7 @@ public class PlayerMovement : NetworkBehaviour
         t = GetComponent<Transform>();
         colorAssigner.ChangeMaterial("keyboard");
         MyCount = 0;
-        toCount = 1500 + Random.Range(0, 2147);
+        timeToQTE = 600; //
 
     }
     // Update is called once per frame
@@ -132,23 +133,39 @@ public class PlayerMovement : NetworkBehaviour
 
         if (MouseAte == true)
         {
-            /*if (MyCount % 20 == 0)     // Uncomment to wiggle mouse. ----------------
-            {
-                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 26f, 0, 1);
-            } else
-            {
-                gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 0.003f, 0, 1);
-            }*/
 
             MyCount += 1;
-            if (MyCount == toCount)
+            if (MyCount >= timeToQTE)//trigger QTE if 10 secs have passed
             {
-                BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
+                shaking();
+            }
+
+            if (MyCount >= timeToQTE +720) //time is up to complete all QTE (180 frames for 4 inputs)
+            {
+                if (QTEProgress[3] == false) //failed to complete in time
+                {
+                    BulletSpawningServerRpc(Mouth.transform.position, Mouth.transform.rotation);
+                    MouseAte = false;
+                }
+                MyCount = 0; //win or lose, restart the timer
             }
         }
 
 
 
+    }
+
+    void shaking()
+    {
+
+        if (MyCount % 20 == 0)     // Uncomment to wiggle mouse. ----------------
+        {
+            gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 26f, 0, 1);
+        }
+        else
+        {
+            gameObject.transform.Find("MouseNOscript").gameObject.transform.rotation = new Quaternion(0, 0.003f, 0, 1);
+        }
     }
 
     // this method is called when the object is spawned
@@ -187,7 +204,7 @@ public class PlayerMovement : NetworkBehaviour
         mt.GetComponent<SkinnedMeshRenderer>().enabled = false;
 
         // New Random drop time for next mouse:
-        toCount = 1500 + Random.Range(0, 2147);
+        timeToQTE = 1500 + Random.Range(0, 2147);
         MyCount = 0;
         MouseAte = false;
 

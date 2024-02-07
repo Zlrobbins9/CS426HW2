@@ -25,7 +25,8 @@ public class Target : NetworkBehaviour
                 if (mouse.material.name == target.material.name)
                 {
                     Debug.Log("Materials match!");
-                    scoreManager.AddPoint();
+                    ///scoreManager.AddPoint();
+                    Debug.Log("Error: ScoreManager.AddPoint is broken, please fix and uncomment the line above");
                     DestroyTargetServerRpc();
                     // Add any additional logic here for when materials match
                 }
