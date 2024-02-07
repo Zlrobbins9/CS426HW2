@@ -15,6 +15,7 @@ public class PlayerMovement : NetworkBehaviour
     public GameObject Mouth;        // Slide Child: Mouth here.
     public GameObject Mouse;        // Mouse prefab with MS script
     public MS colorAssigner;
+    public Material skinMouse;
 
 
     public int MyCount; // Start count once mouse picked up.
@@ -197,6 +198,8 @@ public class PlayerMovement : NetworkBehaviour
         newMouse.GetComponent<Rigidbody>().velocity += Vector3.up * 2;
         newMouse.GetComponent<Rigidbody>().AddForce(newMouse.transform.forward * 1500);
         newMouse.GetComponent<MS>().Dropped = true;
+        newMouse.GetComponent<MS>().Material1 = skinMouse;
+
 
         // Makes Child MouseNOscript hidden(spit out):
         GameObject mb = gameObject.transform.Find("MouseNOscript").gameObject;
@@ -226,6 +229,8 @@ public class PlayerMovement : NetworkBehaviour
                 GameObject mb = gameObject.transform.Find("MouseNOscript").gameObject;
                 GameObject mt = mb.transform.Find("Maus").gameObject;
                 mt.GetComponent<SkinnedMeshRenderer>().enabled = true;
+                mt.GetComponent<SkinnedMeshRenderer>().material = other.gameObject.GetComponent<MS>().Material1;
+                skinMouse = other.gameObject.GetComponent<MS>().Material1;
 
                 MouseAte = true;
             }
