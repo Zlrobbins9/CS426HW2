@@ -12,8 +12,8 @@ public class PlayerMovement : NetworkBehaviour
     public float rotationSpeed = 90;
     public float force = 700f;
     public bool MouseAte;
-    public GameObject Mouth;
-    public GameObject Mouse;
+    public GameObject Mouth;        // Slide Child: Mouth here.
+    public GameObject Mouse;        // Mouse prefab with MS script
     public MS colorAssigner;
 
 
@@ -31,8 +31,7 @@ public class PlayerMovement : NetworkBehaviour
     // save the instantiated prefab
     private GameObject instantiatedPrefab;
 
-    public GameObject Mouth;        // Slide Child: Mouth here.
-    public GameObject Mouse;        // Mouse prefab with MS script
+
     public GameObject EmptyMouse;  // Slide Child: MouseNOScript here
 
     // reference to the camera audio listener
@@ -218,20 +217,4 @@ public class PlayerMovement : NetworkBehaviour
 
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-
-        if (MouseAte == false && other.gameObject.CompareTag("Mouse"))
-        {
-            Debug.Log("Ate:" + other.gameObject.GetComponent<MS>().Dropped);
-            //other.gameObject.transform.parent = gameObject.transform;
-            if (other.gameObject.GetComponent<MS>().Dropped == false)
-            {
-                Destroy(other.gameObject);
-                MouseAte = true;
-            }
-
-        }
-
-    }
 }
